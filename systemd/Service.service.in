@@ -1,0 +1,11 @@
+[Unit]
+Description=@PROJECT_DESCRIPTION@
+Wants=systemd-udevd.service
+After=systemd-udevd.service
+
+[Service]
+Type=simple
+ExecStart=@SERVICE_EXECUTABLE@
+
+[Install]
+WantedBy=multi-user.target

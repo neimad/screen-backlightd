@@ -13,8 +13,8 @@ require_module(gobject-2.0 MINIMUM 2.58)
 require_module(gio-unix-2.0 MINIMUM 2.58)
 require_module(libudev MINIMUM 240)
 
-set(CONTROLD_DBUS_BUS_NAME "org.neimad.controld1")
-set(CONTROLD_DBUS_OBJECT_PATH "/org/neimad/controld1")
+set(CONTROLD_DBUS_BUS_NAME "org.neimad.control1")
+set(CONTROLD_DBUS_OBJECT_PATH "/org/neimad/control1")
 
 add_subdirectory(dbus)
 add_subdirectory(src)

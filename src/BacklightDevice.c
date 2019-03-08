@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright © 2019 Damien Flament
+// Copyright Ãƒâ€šÃ‚Â© 2019 Damien Flament
 // This file is part of screen-backlightd.
 
 #include "BacklightDevice.h"
@@ -7,7 +7,6 @@
 #include "glib-helpers/glib-object-helpers.h"
 
 #include <errno.h>
-#include <libudev.h>
 
 #define SYSFS_SUBSYSTEM "backlight"
 #define SYSATTR_MAX_BRIGHTNESS_GET "max_brightness"
@@ -23,8 +22,9 @@ struct _BacklightDevice
 
 G_DEFINE_TYPE(BacklightDevice, backlight_device, G_TYPE_OBJECT)
 
-enum {
-  PROPERTY_SYSNAME = 1,
+enum
+{
+  PROPERTY_DEVICE = 1,
   PROPERTY_BRIGHTNESS,
   PROPERTY_MIN_BRIGHTNESS,
   PROPERTY_MAX_BRIGHTNESS,
@@ -62,43 +62,6 @@ static void transform_sysattr_uint(const GValue *source, GValue *target)
   }
 
   g_value_set_uint(target, (guint) value);
-}
-
-/*
- * get_udev_device:
- * @sysname: the _udev_ sysname
- *
- * Gives the _udev_ device with the specified @sysname.
- *
- * Returns: (transfer full): a new instance of #udev_device
- */
-static struct udev_device *get_udev_device(const gchar *sysname)
-{
-  struct udev *udev          = NULL;
-  struct udev_device *device = NULL;
-
-  g_return_val_if_fail(sysname != NULL, NULL);
-
-  udev = udev_new();
-
-  if (udev == NULL)
-  {
-    g_error("Failed to create udev context.");
-  }
-
-  device =
-    udev_device_new_from_subsystem_sysname(udev, SYSFS_SUBSYSTEM, sysname);
-
-  if (device == NULL)
-  {
-    g_error("Failed to create udev device on subsystem '%s' with sysname '%s'.",
-            SYSFS_SUBSYSTEM,
-            sysname);
-  }
-
-  udev_unref(udev);
-
-  return device;
 }
 
 /*
@@ -254,10 +217,10 @@ static void backlight_device_set_property(BacklightDevice *self,
 {
   switch (property_id)
   {
-    case PROPERTY_SYSNAME:
+    case PROPERTY_DEVICE:
       g_assert(self->udev_device == NULL);
 
-      self->udev_device = get_udev_device(g_value_get_string(value));
+      self->udev_device = g_value_get_pointer(value);
       break;
 
     case PROPERTY_BRIGHTNESS:
@@ -283,12 +246,11 @@ static void backlight_device_class_init(BacklightDeviceClass *klass)
   object_class->get_property =
     (GObjectGetPropertyFunc) backlight_device_get_property;
 
-  backlight_device_properties[PROPERTY_SYSNAME] =
-    g_param_spec_string("sysname",
-                        "Sysfs name",
-                        "Device sysfs name",
-                        NULL,
-                        G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
+  backlight_device_properties[PROPERTY_DEVICE] =
+    g_param_spec_pointer("device",
+                         "udev device",
+                         "Udev device",
+                         G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE);
   backlight_device_properties[PROPERTY_BRIGHTNESS] =
     g_param_spec_uint("brightness",
                       "Actual brightness",
@@ -319,9 +281,10 @@ static void backlight_device_class_init(BacklightDeviceClass *klass)
                                     backlight_device_properties);
 }
 
-BacklightDevice *backlight_device_new(const gchar *sysname)
+BacklightDevice *
+backlight_device_new(struct udev_device *device)
 {
-  g_return_val_if_fail(sysname != NULL, NULL);
+  g_return_val_if_fail(device != NULL, NULL);
 
-  return g_object_new(BACKLIGHT_TYPE_DEVICE, "sysname", sysname, NULL);
+  return g_object_new(BACKLIGHT_TYPE_DEVICE, "device", device, NULL);
 }

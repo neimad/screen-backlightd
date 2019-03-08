@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright © 2019 Damien Flament
+// Copyright Â© 2019 Damien Flament
 // This file is part of screen-backlightd.
 
 #include "DBusControls.h"
@@ -22,8 +22,8 @@ void init_application(Application *app)
 
   g_return_if_fail(app != NULL);
 
-  app->manager = screen_backlight_manager_new(SCREEN_BACKLIGHT_DEVICE_PATH);
-  g_info("Created manager for %s.", SCREEN_BACKLIGHT_DEVICE_PATH);
+  app->manager = screen_backlight_manager_new();
+  g_info("Created manager.");
 
   app->controls =
     dbus_controls_proxy_new_for_bus_sync(G_BUS_TYPE_SYSTEM,

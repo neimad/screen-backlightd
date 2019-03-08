@@ -6,6 +6,7 @@
 
 #include <glib-object.h>
 #include <glib.h>
+#include <libudev.h>
 
 /**
  * BacklightDevice:
@@ -22,7 +23,7 @@
  * The minimum backlight brightness value.
  */
 /**
- * BacklightDevice:maw-brightness:
+ * BacklightDevice:max-brightness:
  *
  * The maximum backlight brightness value.
  */
@@ -32,10 +33,10 @@ G_DECLARE_FINAL_TYPE(
 
 /**
  * backlight_device_new: (constructor)
- * @syspath: the name of the device within _sysfs_
+ * @device: a _udev_ device
  *
- * Creates a new backlight device from a _sysfs_ name.
+ * Creates a new backlight device from a _udev_ device.
  *
  * Returns: (transfer full): a new #BacklightDevice
  */
-BacklightDevice *backlight_device_new(const gchar *sysname);
+BacklightDevice *backlight_device_new(struct udev_device *device);

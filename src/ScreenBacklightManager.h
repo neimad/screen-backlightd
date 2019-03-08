@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright © 2019 Damien Flament
+// Copyright Â© 2019 Damien Flament
 // This file is part of screen-backlightd.
 
 #pragma once
@@ -25,7 +25,7 @@ G_DECLARE_FINAL_TYPE(ScreenBacklightManager,
  *
  * Returns: (transfer full): a new #ScreenBacklightManager
  */
-ScreenBacklightManager *screen_backlight_manager_new();
+ScreenBacklightManager *screen_backlight_manager_new(void);
 
 /**
  * screen_backlight_manager_increase: (method)

@@ -9,5 +9,3 @@
 
 #cmakedefine CONTROLD_DBUS_BUS_NAME "@CONTROLD_DBUS_BUS_NAME@"
 #cmakedefine CONTROLD_DBUS_OBJECT_PATH "@CONTROLD_DBUS_OBJECT_PATH@"
-
-#define SCREEN_BACKLIGHT_DEVICE_PATH "/sys/class/backlight/intel_backlight"

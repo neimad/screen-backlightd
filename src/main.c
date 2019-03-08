@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright Â© 2019 Damien Flament
+// Copyright © 2019 Damien Flament
 // This file is part of screen-backlightd.
 
 #include "DBusControls.h"
@@ -16,7 +16,8 @@ typedef struct _Application
 
 } Application;
 
-void init_application(Application *app)
+void
+init_application(Application *app)
 {
   GError *error = NULL;
 
@@ -52,7 +53,8 @@ void init_application(Application *app)
                            app->manager);
 }
 
-void quit_application(Application *app)
+void
+quit_application(Application *app)
 {
   g_return_if_fail(app != NULL);
 
@@ -70,7 +72,8 @@ void quit_application(Application *app)
   g_main_loop_quit(app->loop);
 }
 
-int main(void)
+int
+main(void)
 {
   Application app = {NULL};
 

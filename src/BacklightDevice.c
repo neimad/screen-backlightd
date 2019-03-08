@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright Ãƒâ€šÃ‚Â© 2019 Damien Flament
+// Copyright © 2019 Damien Flament
 // This file is part of screen-backlightd.
 
 #include "BacklightDevice.h"
@@ -42,7 +42,8 @@ static GParamSpec *backlight_device_properties[N_PROPERTIES] = {
  *
  * Transforms a #gchararray value read from a _sysattr_ to a #guint.
  */
-static void transform_sysattr_uint(const GValue *source, GValue *target)
+static void
+transform_sysattr_uint(const GValue *source, GValue *target)
 {
   guint64 value     = 0;
   const gchar *nptr = NULL;
@@ -72,9 +73,10 @@ static void transform_sysattr_uint(const GValue *source, GValue *target)
  *
  * Gets the @value of an _udev_ @device _sysfs_ attribute.
  */
-static void get_sysattr_value(struct udev_device *device,
-                              const gchar *sysattr,
-                              GValue *value)
+static void
+get_sysattr_value(struct udev_device *device,
+                  const gchar *sysattr,
+                  GValue *value)
 {
   GValue read_value = G_VALUE_INIT;
 
@@ -105,9 +107,10 @@ static void get_sysattr_value(struct udev_device *device,
  *
  * Sets the @value an _udev_ @device _sysfs_ attribute.
  */
-static void set_sysattr_value(struct udev_device *device,
-                              const gchar *sysattr,
-                              const GValue *value)
+static void
+set_sysattr_value(struct udev_device *device,
+                  const gchar *sysattr,
+                  const GValue *value)
 {
   GValue value_to_write = G_VALUE_INIT;
   gint error_code       = 0;
@@ -136,7 +139,8 @@ static void set_sysattr_value(struct udev_device *device,
   }
 }
 
-static void backlight_device_init(BacklightDevice *self G_GNUC_UNUSED)
+static void
+backlight_device_init(BacklightDevice *self G_GNUC_UNUSED)
 {
   self->maximum = 0;
 
@@ -146,7 +150,8 @@ static void backlight_device_init(BacklightDevice *self G_GNUC_UNUSED)
   g_assert(g_value_type_transformable(G_TYPE_STRING, G_TYPE_UINT));
 }
 
-static void backlight_device_constructed(BacklightDevice *self)
+static void
+backlight_device_constructed(BacklightDevice *self)
 {
   GParamSpecUInt *brightness_property = NULL;
 
@@ -167,17 +172,19 @@ static void backlight_device_constructed(BacklightDevice *self)
   G_OBJECT_CLASS(backlight_device_parent_class)->constructed(G_OBJECT(self));
 }
 
-static void backlight_device_dispose(BacklightDevice *self)
+static void
+backlight_device_dispose(BacklightDevice *self)
 {
   g_clear_pointer(&self->udev_device, udev_device_unref);
 
   G_OBJECT_CLASS(backlight_device_parent_class)->dispose(G_OBJECT(self));
 }
 
-static void backlight_device_get_property(BacklightDevice *self,
-                                          guint property_id,
-                                          GValue *value,
-                                          GParamSpec *spec)
+static void
+backlight_device_get_property(BacklightDevice *self,
+                              guint property_id,
+                              GValue *value,
+                              GParamSpec *spec)
 {
   switch (property_id)
   {
@@ -210,10 +217,11 @@ static void backlight_device_get_property(BacklightDevice *self,
   }
 }
 
-static void backlight_device_set_property(BacklightDevice *self,
-                                          guint property_id,
-                                          const GValue *value,
-                                          GParamSpec *spec)
+static void
+backlight_device_set_property(BacklightDevice *self,
+                              guint property_id,
+                              const GValue *value,
+                              GParamSpec *spec)
 {
   switch (property_id)
   {
@@ -234,7 +242,8 @@ static void backlight_device_set_property(BacklightDevice *self,
   }
 }
 
-static void backlight_device_class_init(BacklightDeviceClass *klass)
+static void
+backlight_device_class_init(BacklightDeviceClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS(klass);
 

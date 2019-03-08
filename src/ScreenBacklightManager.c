@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright Ãƒâ€šÃ‚Â© 2019 Damien Flament
+// Copyright © 2019 Damien Flament
 // This file is part of screen-backlightd.
 
 #include "ScreenBacklightManager.h"
@@ -77,7 +77,8 @@ screen_backlight_manager_init(ScreenBacklightManager *self G_GNUC_UNUSED)
   self->device = backlight_device_new(discover_first_device());
 }
 
-static void screen_backlight_manager_dispose(ScreenBacklightManager *self)
+static void
+screen_backlight_manager_dispose(ScreenBacklightManager *self)
 {
   g_object_unref(self->device);
 
@@ -93,7 +94,8 @@ screen_backlight_manager_class_init(ScreenBacklightManagerClass *klass)
   object_class->dispose = (GObjectDisposeFunc) screen_backlight_manager_dispose;
 }
 
-ScreenBacklightManager *screen_backlight_manager_new()
+ScreenBacklightManager *
+screen_backlight_manager_new(void)
 {
   ScreenBacklightManager *manager = NULL;
 

@@ -1,6 +1,13 @@
 find_package(GDBusCodegen)
 include(TargetModules)
 
+set(CONTROLD_DBUS_BUS_NAME "org.neimad.control1"
+    CACHE STRING "controld D-Bus well-known bus name")
+set(CONTROLD_DBUS_OBJECT_PATH "/org/neimad/control1"
+    CACHE STRING "controld D-Bus object path")
+mark_as_advanced(CONTROLD_DBUS_BUS_NAME
+                 CONTROLD_DBUS_OBJECT_PATH)
+
 set(target ${PROJECT_NAME}-dbus)
 set(interface "${CONTROLD_DBUS_BUS_NAME}.Controls.xml")
 set(interface_url "https://github.com/neimad/controld/raw/master/dist/${interface}")

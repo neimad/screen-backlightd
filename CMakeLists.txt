@@ -9,6 +9,7 @@ project(screen-backlightd
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 include(TargetModules)
 
+require_module(glib-2.0 MINIMUM 2.58)
 require_module(gobject-2.0 MINIMUM 2.58)
 require_module(gio-unix-2.0 MINIMUM 2.58)
 require_module(libudev MINIMUM 240)

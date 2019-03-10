@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 project(screen-backlightd
         DESCRIPTION "A screen backlight daemon"
         HOMEPAGE_URL "https://github.com/neimad/screen-backlightd"
-        VERSION 0.1
+        VERSION 0.2.1
         LANGUAGES C)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")

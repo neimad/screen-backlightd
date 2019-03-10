@@ -8,7 +8,6 @@ set(CONTROLD_DBUS_OBJECT_PATH "/org/neimad/control1"
 mark_as_advanced(CONTROLD_DBUS_BUS_NAME
                  CONTROLD_DBUS_OBJECT_PATH)
 
-set(target ${PROJECT_NAME}-dbus)
 set(interface "${CONTROLD_DBUS_BUS_NAME}.Controls.xml")
 set(interface_url "https://github.com/neimad/controld/raw/master/dist/${interface}")
 set(interface_path "${CMAKE_CURRENT_BINARY_DIR}/${interface}")
@@ -24,7 +23,7 @@ gdbus_generate_code("${interface_path}"
                     NAMESPACE DBus
                     PRAGMA_ONCE)
 
-add_library(${target} STATIC DBusControls.c)
-target_required_modules(${target} PUBLIC gio-unix-2.0)
-target_include_directories(${target} INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
-target_compile_options(${target} PRIVATE -Wno-unused-parameter)
+add_library(screen-backlightd-dbus STATIC DBusControls.c)
+target_required_modules(screen-backlightd-dbus PUBLIC gio-unix-2.0)
+target_include_directories(screen-backlightd-dbus INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
+target_compile_options(screen-backlightd-dbus PRIVATE -Wno-unused-parameter)

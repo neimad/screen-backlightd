@@ -18,7 +18,7 @@ struct _ScreenBacklightManager
   BacklightDevice *device;
 };
 
-G_DEFINE_TYPE(ScreenBacklightManager, screen_backlight_manager, G_TYPE_OBJECT)
+G_DEFINE_TYPE(ScreenBacklightManager, screen_backlight_manager, G_TYPE_OBJECT);
 
 /*
  * discover_first_device:
@@ -87,11 +87,22 @@ screen_backlight_manager_dispose(ScreenBacklightManager *self)
 }
 
 static void
+screen_backlight_manager_finalize(ScreenBacklightManager *self)
+{
+  self->device = NULL;
+
+  G_OBJECT_CLASS(screen_backlight_manager_parent_class)
+    ->finalize(G_OBJECT(self));
+}
+
+static void
 screen_backlight_manager_class_init(ScreenBacklightManagerClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS(klass);
 
   object_class->dispose = (GObjectDisposeFunc) screen_backlight_manager_dispose;
+  object_class->finalize =
+    (GObjectFinalizeFunc) screen_backlight_manager_finalize;
 }
 
 ScreenBacklightManager *

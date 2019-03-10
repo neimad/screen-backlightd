@@ -27,7 +27,7 @@
  * The maximum backlight brightness value.
  */
 G_DECLARE_FINAL_TYPE(
-  BacklightDevice, backlight_device, BACKLIGHT, DEVICE, GObject)
+  BacklightDevice, backlight_device, BACKLIGHT, DEVICE, GObject);
 #define BACKLIGHT_TYPE_DEVICE backlight_device_get_type()
 
 /**

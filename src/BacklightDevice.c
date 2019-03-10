@@ -20,7 +20,7 @@ struct _BacklightDevice
   guint maximum;
 };
 
-G_DEFINE_TYPE(BacklightDevice, backlight_device, G_TYPE_OBJECT)
+G_DEFINE_TYPE(BacklightDevice, backlight_device, G_TYPE_OBJECT);
 
 enum
 {
@@ -173,11 +173,11 @@ backlight_device_constructed(BacklightDevice *self)
 }
 
 static void
-backlight_device_dispose(BacklightDevice *self)
+backlight_device_finalize(BacklightDevice *self)
 {
   g_clear_pointer(&self->udev_device, udev_device_unref);
 
-  G_OBJECT_CLASS(backlight_device_parent_class)->dispose(G_OBJECT(self));
+  G_OBJECT_CLASS(backlight_device_parent_class)->finalize(G_OBJECT(self));
 }
 
 static void
@@ -249,7 +249,7 @@ backlight_device_class_init(BacklightDeviceClass *klass)
 
   object_class->constructed =
     (GObjectConstructedFunc) backlight_device_constructed;
-  object_class->finalize = (GObjectFinalizeFunc) backlight_device_dispose;
+  object_class->finalize = (GObjectFinalizeFunc) backlight_device_finalize;
   object_class->set_property =
     (GObjectSetPropertyFunc) backlight_device_set_property;
   object_class->get_property =

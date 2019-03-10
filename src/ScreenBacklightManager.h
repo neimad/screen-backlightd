@@ -8,13 +8,13 @@
 
 /**
  * ScreenBacklightManager:
- * A manager for setting the screen backlight level.
+ * A manager to set the screen backlight brightness.
  */
 G_DECLARE_FINAL_TYPE(ScreenBacklightManager,
                      screen_backlight_manager,
                      SCREEN_BACKLIGHT,
                      MANAGER,
-                     GObject)
+                     GObject);
 #define SCREEN_BACKLIGHT_TYPE_MANAGER screen_backlight_manager_get_type()
 
 /**
@@ -30,7 +30,7 @@ ScreenBacklightManager *screen_backlight_manager_new(void);
  * screen_backlight_manager_increase: (method)
  * @manager: the manager
  *
- * Increases the screen backlight level by one step.
+ * Increases the screen backlight brightness by one step.
  */
 void screen_backlight_manager_increase(ScreenBacklightManager *manager);
 
@@ -38,6 +38,6 @@ void screen_backlight_manager_increase(ScreenBacklightManager *manager);
  * screen_backlight_manager_decrease: (method)
  * @manager: the manager
  *
- * Decreases the screen backlight level by one step.
+ * Decreases the screen backlight brightness by one step.
  */
 void screen_backlight_manager_decrease(ScreenBacklightManager *manager);

@@ -20,6 +20,69 @@ struct _ScreenBacklightManager
 
 G_DEFINE_TYPE(ScreenBacklightManager, screen_backlight_manager, G_TYPE_OBJECT);
 
+typedef enum _BrightnessAction
+{
+  BRIGHTNESS_INCREASE = 1,
+  BRIGHTNESS_DECREASE = -1
+} BrightnessAction;
+
+static struct udev_device *discover_first_device(void);
+static void perfom_brightness_action(ScreenBacklightManager *self,
+                                     BrightnessAction action);
+
+static void
+screen_backlight_manager_init(ScreenBacklightManager *self)
+{
+  self->device = backlight_device_new(discover_first_device());
+}
+
+static void
+screen_backlight_manager_dispose(ScreenBacklightManager *self)
+{
+  g_object_unref(self->device);
+
+  G_OBJECT_CLASS(screen_backlight_manager_parent_class)
+    ->dispose(G_OBJECT(self));
+}
+
+static void
+screen_backlight_manager_finalize(ScreenBacklightManager *self)
+{
+  self->device = NULL;
+
+  G_OBJECT_CLASS(screen_backlight_manager_parent_class)
+    ->finalize(G_OBJECT(self));
+}
+
+static void
+screen_backlight_manager_class_init(ScreenBacklightManagerClass *klass)
+{
+  GObjectClass *object_class = G_OBJECT_CLASS(klass);
+
+  object_class->dispose = (GObjectDisposeFunc) screen_backlight_manager_dispose;
+  object_class->finalize =
+    (GObjectFinalizeFunc) screen_backlight_manager_finalize;
+}
+
+ScreenBacklightManager *
+screen_backlight_manager_new(void)
+{
+  return (ScreenBacklightManager *) g_object_new(SCREEN_BACKLIGHT_TYPE_MANAGER,
+                                                 NULL);
+}
+
+void
+screen_backlight_manager_increase(ScreenBacklightManager *self)
+{
+  perfom_brightness_action(self, BRIGHTNESS_INCREASE);
+}
+
+void
+screen_backlight_manager_decrease(ScreenBacklightManager *self)
+{
+  perfom_brightness_action(self, BRIGHTNESS_DECREASE);
+}
+
 /*
  * discover_first_device:
  *
@@ -71,56 +134,6 @@ discover_first_device(void)
   return device;
 }
 
-static void
-screen_backlight_manager_init(ScreenBacklightManager *self G_GNUC_UNUSED)
-{
-  self->device = backlight_device_new(discover_first_device());
-}
-
-static void
-screen_backlight_manager_dispose(ScreenBacklightManager *self)
-{
-  g_object_unref(self->device);
-
-  G_OBJECT_CLASS(screen_backlight_manager_parent_class)
-    ->dispose(G_OBJECT(self));
-}
-
-static void
-screen_backlight_manager_finalize(ScreenBacklightManager *self)
-{
-  self->device = NULL;
-
-  G_OBJECT_CLASS(screen_backlight_manager_parent_class)
-    ->finalize(G_OBJECT(self));
-}
-
-static void
-screen_backlight_manager_class_init(ScreenBacklightManagerClass *klass)
-{
-  GObjectClass *object_class = G_OBJECT_CLASS(klass);
-
-  object_class->dispose = (GObjectDisposeFunc) screen_backlight_manager_dispose;
-  object_class->finalize =
-    (GObjectFinalizeFunc) screen_backlight_manager_finalize;
-}
-
-ScreenBacklightManager *
-screen_backlight_manager_new(void)
-{
-  ScreenBacklightManager *manager = NULL;
-
-  manager = g_object_new(SCREEN_BACKLIGHT_TYPE_MANAGER, NULL);
-
-  return manager;
-}
-
-typedef enum _BrightnessAction
-{
-  BRIGHTNESS_INCREASE = 1,
-  BRIGHTNESS_DECREASE = -1
-} BrightnessAction;
-
 /*
  * screen_backlight_manager_set:
  * @self: the manager
@@ -129,7 +142,7 @@ typedef enum _BrightnessAction
  * Performs an action on the #BacklightDevice.
  */
 static void
-brightness_perfom(ScreenBacklightManager *self, BrightnessAction action)
+perfom_brightness_action(ScreenBacklightManager *self, BrightnessAction action)
 {
   gint maximum      = 0;
   gint minimum      = 0;
@@ -153,16 +166,4 @@ brightness_perfom(ScreenBacklightManager *self, BrightnessAction action)
   target_value = CLAMP(target_value, minimum, maximum);
 
   g_object_set(self->device, "brightness", target_value, NULL);
-}
-
-void
-screen_backlight_manager_increase(ScreenBacklightManager *self)
-{
-  brightness_perfom(self, BRIGHTNESS_INCREASE);
-}
-
-void
-screen_backlight_manager_decrease(ScreenBacklightManager *self)
-{
-  brightness_perfom(self, BRIGHTNESS_DECREASE);
 }

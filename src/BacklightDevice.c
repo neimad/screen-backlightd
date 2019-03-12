@@ -35,115 +35,17 @@ static GParamSpec *backlight_device_properties[N_PROPERTIES] = {
   NULL,
 };
 
-/*
- * transform_sysattr_uint:
- * @source: the source value
- * @target: the target value
- *
- * Transforms a #gchararray value read from a _sysattr_ to a #guint.
- */
-static void
-transform_sysattr_uint(const GValue *source, GValue *target)
-{
-  guint64 value     = 0;
-  const gchar *nptr = NULL;
-  gchar *endptr     = NULL;
-
-  g_return_if_fail(G_VALUE_HOLDS_STRING(source));
-  g_return_if_fail(G_VALUE_HOLDS_UINT(target));
-
-  nptr = g_value_get_string(source);
-
-  value = g_ascii_strtoull(nptr, &endptr, 10);
-  g_assert(value <= G_MAXUINT);
-
-  if (endptr == nptr)
-  {
-    g_error("Failed to converts string '%s' to unsigned integer.", nptr);
-  }
-
-  g_value_set_uint(target, (guint) value);
-}
-
-/*
- * get_sysattr_uint_value:
- * @device: a _udev_ device
- * @sysattr: the name of the _sysfs_ attribute to get the value
- * @value: (out caller-allocates): the location to store the value
- *
- * Gets the @value of an _udev_ @device _sysfs_ attribute.
- */
-static void
-get_sysattr_value(struct udev_device *device,
-                  const gchar *sysattr,
-                  GValue *value)
-{
-  GValue read_value = G_VALUE_INIT;
-
-  g_return_if_fail(device != NULL);
-  g_return_if_fail(sysattr != NULL);
-  g_return_if_fail(value != NULL);
-
-  g_value_init(&read_value, G_TYPE_STRING);
-  g_value_set_string(&read_value,
-                     udev_device_get_sysattr_value(device, sysattr));
-
-  if (g_value_get_string(&read_value) == NULL)
-  {
-    g_error("Failed to read sysfs attribue '%s' on device '%s'.",
-            sysattr,
-            udev_device_get_syspath(device));
-  }
-
-  g_assert(g_value_type_transformable(G_TYPE_STRING, G_VALUE_TYPE(value)));
-  g_value_transform(&read_value, value);
-}
-
-/*
- * set_sysattr_uint_value:
- * @device: a _udev_ device
- * @sysattr: the name of the _sysfs_ attribute to set the value
- * @value: the value to set
- *
- * Sets the @value an _udev_ @device _sysfs_ attribute.
- */
-static void
-set_sysattr_value(struct udev_device *device,
-                  const gchar *sysattr,
-                  const GValue *value)
-{
-  GValue value_to_write = G_VALUE_INIT;
-  gint error_code       = 0;
-
-  g_return_if_fail(device != NULL);
-  g_return_if_fail(sysattr != NULL);
-  g_return_if_fail(G_VALUE_HOLDS_UINT(value));
-
-  g_value_init(&value_to_write, G_TYPE_STRING);
-
-  g_assert(g_value_type_transformable(G_VALUE_TYPE(value), G_TYPE_STRING));
-  g_value_transform(value, &value_to_write);
-
-  error_code =
-    udev_device_set_sysattr_value(device,
-                                  sysattr,
-                                  g_value_get_string(&value_to_write));
-
-  if (error_code < 0)
-  {
-    g_error("Failed to write value '%s' to attribute '%s' on device '%s': %s.",
-            g_value_get_string(&value_to_write),
-            sysattr,
-            udev_device_get_syspath(device),
-            g_strerror(-error_code));
-  }
-}
+static void get_sysattr_value(struct udev_device *device,
+                              const gchar *sysattr,
+                              GValue *value);
+static void set_sysattr_value(struct udev_device *device,
+                              const gchar *sysattr,
+                              const GValue *value);
+static void transform_sysattr_uint(const GValue *source, GValue *target);
 
 static void
 backlight_device_init(BacklightDevice *self G_GNUC_UNUSED)
 {
-  self->maximum = 0;
-
   g_value_register_transform_func(G_TYPE_STRING,
                                   G_TYPE_UINT,
                                   transform_sysattr_uint);
@@ -296,4 +198,108 @@ backlight_device_new(struct udev_device *device)
   g_return_val_if_fail(device != NULL, NULL);
 
   return g_object_new(BACKLIGHT_TYPE_DEVICE, "device", device, NULL);
+}
+
+/*
+ * transform_sysattr_uint:
+ * @source: the source value
+ * @target: the target value
+ *
+ * Transforms a #gchararray value read from a _sysattr_ to a #guint.
+ */
+static void
+transform_sysattr_uint(const GValue *source, GValue *target)
+{
+  guint64 value     = 0;
+  const gchar *nptr = NULL;
+  gchar *endptr     = NULL;
+
+  g_return_if_fail(G_VALUE_HOLDS_STRING(source));
+  g_return_if_fail(G_VALUE_HOLDS_UINT(target));
+
+  nptr = g_value_get_string(source);
+
+  value = g_ascii_strtoull(nptr, &endptr, 10);
+  g_assert(value <= G_MAXUINT);
+
+  if (endptr == nptr)
+  {
+    g_error("Failed to converts string '%s' to unsigned integer.", nptr);
+  }
+
+  g_value_set_uint(target, (guint) value);
+}
+
+/*
+ * get_sysattr_uint_value:
+ * @device: a _udev_ device
+ * @sysattr: the name of the _sysfs_ attribute to get the value
+ * @value: (out caller-allocates): the location to store the value
+ *
+ * Gets the @value of an _udev_ @device _sysfs_ attribute.
+ */
+static void
+get_sysattr_value(struct udev_device *device,
+                  const gchar *sysattr,
+                  GValue *value)
+{
+  GValue read_value = G_VALUE_INIT;
+
+  g_return_if_fail(device != NULL);
+  g_return_if_fail(sysattr != NULL);
+  g_return_if_fail(value != NULL);
+
+  g_value_init(&read_value, G_TYPE_STRING);
+  g_value_set_string(&read_value,
+                     udev_device_get_sysattr_value(device, sysattr));
+
+  if (g_value_get_string(&read_value) == NULL)
+  {
+    g_error("Failed to read sysfs attribue '%s' on device '%s'.",
+            sysattr,
+            udev_device_get_syspath(device));
+  }
+
+  g_assert(g_value_type_transformable(G_TYPE_STRING, G_VALUE_TYPE(value)));
+  g_value_transform(&read_value, value);
+}
+
+/*
+ * set_sysattr_uint_value:
+ * @device: a _udev_ device
+ * @sysattr: the name of the _sysfs_ attribute to set the value
+ * @value: the value to set
+ *
+ * Sets the @value an _udev_ @device _sysfs_ attribute.
+ */
+static void
+set_sysattr_value(struct udev_device *device,
+                  const gchar *sysattr,
+                  const GValue *value)
+{
+  GValue value_to_write = G_VALUE_INIT;
+  gint error_code       = 0;
+
+  g_return_if_fail(device != NULL);
+  g_return_if_fail(sysattr != NULL);
+  g_return_if_fail(G_VALUE_HOLDS_UINT(value));
+
+  g_value_init(&value_to_write, G_TYPE_STRING);
+
+  g_assert(g_value_type_transformable(G_VALUE_TYPE(value), G_TYPE_STRING));
+  g_value_transform(value, &value_to_write);
+
+  error_code =
+    udev_device_set_sysattr_value(device,
+                                  sysattr,
+                                  g_value_get_string(&value_to_write));
+
+  if (error_code < 0)
+  {
+    g_error("Failed to write value '%s' to attribute '%s' on device '%s': %s.",
+            g_value_get_string(&value_to_write),
+            sysattr,
+            udev_device_get_syspath(device),
+            g_strerror(-error_code));
+  }
 }

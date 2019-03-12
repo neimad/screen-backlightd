@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright Â© 2019 Damien Flament
+// Copyright © 2019 Damien Flament
 // This file is part of screen-backlightd.
 
 #pragma once

@@ -5,7 +5,8 @@ configure_file(config.h.in config.h)
 
 add_library(screen-backlightd-units STATIC ScreenBacklightManager.c
                                            BacklightDevice.c)
-target_required_modules(screen-backlightd-units PUBLIC gobject-2.0 libudev)
+target_required_modules(screen-backlightd-units PUBLIC gobject-2.0
+                                                PRIVATE libudev)
 
 add_executable(screen-backlightd main.c)
 target_required_modules(screen-backlightd PRIVATE glib-2.0)
